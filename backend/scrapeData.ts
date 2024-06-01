@@ -4,7 +4,6 @@ import { logNotification } from './utils';
 
 async function main() {
     let data: {
-        id: number,
         name: string,
         code: string
         imageUrl: string,
@@ -16,6 +15,7 @@ async function main() {
     let page = 0;
     const limit = 50;
 
+    console.log("starting scraping")
     while (true) {
         const response = await axios.get('https://coinranking.com/api/v2/coins', {
             params: {
@@ -39,7 +39,6 @@ async function main() {
 
         const res = response.data.data.coins.map((item: any) => {
             return {
-                id: item.id,
                 name: item.name,
                 code: item.symbol,
                 imageUrl: item.iconUrl,
@@ -58,9 +57,10 @@ async function main() {
 
         page++;
     }
+    console.log("ending scraping")
 
     for (const item of data) {
-        await prisma.coin.upsert({
+        const coin = await prisma.coin.upsert({
             create: item,
             update: item,
             where: {
@@ -70,13 +70,16 @@ async function main() {
 
         const watchlists = await prisma.watchList.findMany({
             where: {
-                coinId: item.id,
+                coinId: coin.id,
             },
             include: {
                 user: true
             }
         });
 
+        if(watchlists.length >0)
+        console.log(watchlists)
+        
         for (const watchlist of watchlists) {
             const price = parseFloat(item.price);
             if (price < parseFloat(watchlist.min) || price > parseFloat(watchlist.max)) {
@@ -85,6 +88,7 @@ async function main() {
                     message: `Price alert for ${item.name}: ${price}`
                 }
                 if (process.send) {
+                    console.log('send')
                     process.send(info);
                 }
 
@@ -94,5 +98,5 @@ async function main() {
     }
 }
 
-setInterval(main, 30000);
+setInterval(main, 300000);
 main()

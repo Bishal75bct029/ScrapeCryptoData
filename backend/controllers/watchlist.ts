@@ -21,26 +21,29 @@ export const create = async (req: Request, res: Response) => {
     try {
         //@ts-ignore
         const user: { id: number, email: string } = req.user;
-        const { id } = req.body;
+        console.log('user',user.id)
+        const { coinId } = req.body;
         const existingUserWatchList = await prisma.watchList.findFirst({
             where: {
-                coinId: id,
+                coinId: coinId,
                 userId: user.id
             }
         })
+
         if (existingUserWatchList) throw new Error("Already exists on watchlist");
         const createdWatchList = await prisma.watchList.create({
             data: {
                 userId: user.id,
-                coinId: id,
-                min: req.body.minPrice,
-                max: req.body.maxPrice
+                coinId: coinId,
+                min: String(req.body.minPrice),
+                max: String(req.body.maxPrice)
             }
         })
+        console.log(createdWatchList)
         return res.status(200).json({ message: createdWatchList });
 
     } catch (e) {
-
+        console.log(e)
     }
 }
 
@@ -66,10 +69,11 @@ export const update = async (req: Request, res: Response) => {
                 id: existingWatchList.id,
             },
             data: {
-                min: minPrice,
-                max: maxPrice,
+                min: String(minPrice),
+                max: String(maxPrice),
             },
         });
+        console.log(updatedWatchList)
 
         return res.status(200).json({ message: 'WatchList updated successfully', updatedWatchList });
     } catch (e) {
