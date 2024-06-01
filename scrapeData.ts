@@ -1,8 +1,10 @@
 import axios from 'axios';
-import { prisma } from './prisma'
+import { prisma } from './prisma';
+import { logNotification } from './utils';
 
 async function main() {
     let data: {
+        id: number,
         name: string,
         code: string
         imageUrl: string,
@@ -37,6 +39,7 @@ async function main() {
 
         const res = response.data.data.coins.map((item: any) => {
             return {
+                id: item.id,
                 name: item.name,
                 code: item.symbol,
                 imageUrl: item.iconUrl,
@@ -50,7 +53,7 @@ async function main() {
             ...data,
             ...res
         ]
-        
+
         if (res.length < limit) break;
 
         page++;
@@ -64,7 +67,32 @@ async function main() {
                 code: item.code
             }
         })
+
+        const watchlists = await prisma.watchList.findMany({
+            where: {
+                coinId: item.id,
+            },
+            include: {
+                user: true
+            }
+        });
+
+        for (const watchlist of watchlists) {
+            const price = parseFloat(item.price);
+            if (price < parseFloat(watchlist.min) || price > parseFloat(watchlist.max)) {
+                const info = {
+                    userId: watchlist.userId,
+                    message: `Price alert for ${item.name}: ${price}`
+                }
+                if (process.send) {
+                    process.send(info);
+                }
+
+                logNotification(info.userId, info.message);
+            }
+        }
     }
 }
 
+setInterval(main, 30000);
 main()
