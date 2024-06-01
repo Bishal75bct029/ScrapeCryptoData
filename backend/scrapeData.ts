@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { prisma } from './prisma';
-import { logNotification } from './utils';
+import { logNotification } from './services/utils';
 
 async function main() {
     let data: {

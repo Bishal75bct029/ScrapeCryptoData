@@ -1,11 +1,11 @@
 import express, { ErrorRequestHandler, Express, NextFunction, Request, Response } from "express"
 import { router } from "./routes/route";
-import { PORT } from "./config";
+import { PORT } from "./config/config";
 import { fork } from 'child_process';
 import path from "path";
 import cors from 'cors'
-import { sendNotification } from "./socket";
-import { socketConnection } from './socket';
+import { sendNotification } from "./socket/socket";
+import { socketConnection } from './socket/socket';
 
 const app = express()
 
@@ -17,7 +17,7 @@ app.use('/', router)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     return res.status(500).json({ message: "Internal Server Error" });
-    
+
 })
 
 const server = app.listen(PORT, () => {

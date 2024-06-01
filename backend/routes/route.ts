@@ -1,7 +1,7 @@
 import express from 'express'
 import * as auth from '../controllers/auth';
 import * as watchList from '../controllers/watchlist'
-import { isLoggedIn } from '../middleware';
+import { isLoggedIn } from '../middleware/middleware';
 import * as coins from '../controllers/coins'
 
 export const router = express.Router()

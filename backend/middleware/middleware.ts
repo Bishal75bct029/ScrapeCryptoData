@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
-import { GOOGLE_CLIENT_ID } from "./config";
-import { prisma } from "./prisma";
+import { GOOGLE_CLIENT_ID } from "../config/config";
+import { prisma } from "../prisma";
 
 export type RequestUser = {
     id: number,

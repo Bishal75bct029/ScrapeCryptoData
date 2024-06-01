@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 import { OAuth2Client } from "google-auth-library";
-import { GOOGLE_CLIENT_ID } from "../config";
+import { GOOGLE_CLIENT_ID } from "../config/config";
 
 export async function login(req: Request, res: Response) {
     if (!req.body.token) {
