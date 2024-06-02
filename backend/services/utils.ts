@@ -16,3 +16,35 @@ export const logNotification = (userId: number, message: string) => {
         console.log("logged successfully")
     });
 };
+
+export const convertToNumber = (value: string) => {
+    try {
+        console.log('here')
+        const suffixes: any = {
+            'm': 1e6,
+            'b': 1e9,
+            't': 1e12
+        };
+
+        const matches = value.match(/([\d.]+)\s*([a-zA-Z]+)/);
+
+        if (!matches) {
+            return String(value);
+        }
+
+        const numericValue = parseFloat(matches[1]);
+        const suffix: string = matches[2].toLowerCase();
+
+        if (!startsWithAny(suffix, Object.keys(suffixes))) {
+            throw new Error('Invalid suffix');
+        }
+
+        return String(numericValue * suffixes[suffix[0]]);
+    } catch (_) {
+
+    }
+}
+
+function startsWithAny(string: string, prefixes: string[]) {
+    return prefixes.some(prefix => string.startsWith(prefix));
+}

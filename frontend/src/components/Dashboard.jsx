@@ -50,6 +50,7 @@ const Dashboard = () => {
     (async () => {
       try {
         const res = await http('/me')
+
         if (!res.ok) throw new Error;
         setUserId(res.data.id)
 
@@ -61,8 +62,6 @@ const Dashboard = () => {
   }, [])
   const watchlistButtonTemplate = (coin) => {
     const bgColor = coin.watchLists.length > 0 ? 'bg-green-500' : 'bg-blue-500'
-
-    // console.log(parseFloat(coin.watchLists[0].max < parseFloat(coin.price)))
 
     const outOfRange = coin.watchLists.length > 0 &&
       (parseFloat(coin.watchLists[0].min) > parseFloat(coin.price) ||
@@ -144,13 +143,24 @@ const Dashboard = () => {
     );
   }
 
+  const logOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.reload()
+  }
+
   return (
     <div className='p-10'>
+      <div className='flex justify-between'>
 
-      <Badge value={messages.length} severity="info" className="cursor-pointer mb-2" onClick={() => setOpenNotification(!openNotification)} />
-      {openNotification && <div className="card flex justify-content-center">
-        <VirtualScroller items={messages} itemSize={50} itemTemplate={itemTemplate} className="border-1 mb-4 bg-gray-100  surface-border border-round text-green-900" style={{ width: '200px', minHeight: '100px', height: 'auto', maxHeight: '200px' }} />
-      </div>}
+        <div>
+          <Badge value={messages.length} severity="info" className="cursor-pointer mb-2" onClick={() => setOpenNotification(!openNotification)} />
+          {openNotification && <div className="card flex justify-content-center">
+            <VirtualScroller items={messages.length > 0 ? messages : ["No new notification"]} itemSize={50} itemTemplate={itemTemplate} className="border-1 mb-4 bg-gray-100  surface-border border-round text-green-900" style={{ width: '200px', minHeight: '100px', height: 'auto', maxHeight: '200px' }} />
+          </div>}
+        </div>
+        <Button className='text-gray-500' onClick={logOut} >Logout</Button>
+      </div>
 
       <DataTable value={coins} showGridlines tableStyle={{ minWidth: '50rem' }}>
         <Column field="id" header="Id" hidden></Column>

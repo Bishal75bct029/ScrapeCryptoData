@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const useSocket = (url) => {
     const [socket, setSocket] = useState(null);
-    const [messages, setMessages] = useState(["No new notification"]);
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         const ws = new WebSocket(url);

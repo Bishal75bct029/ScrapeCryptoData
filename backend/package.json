@@ -17,6 +17,7 @@
     "express": "^4.19.2",
     "google-auth-library": "^9.10.0",
     "prisma": "^5.14.0",
+    "puppeteer": "^22.10.0",
     "ws": "^8.17.0"
   },
   "devDependencies": {

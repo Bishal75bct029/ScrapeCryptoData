@@ -32,7 +32,7 @@ const Login = (props) => {
     }
 
     return (
-        <div className='grid h-full place-items-center'>
+        <div className='flex h-screen items-center justify-center bg-gray-200'>
             <GoogleOAuthProvider clientId={clientId}>
                 <GoogleLogin
                     onSuccess={onSuccess}
